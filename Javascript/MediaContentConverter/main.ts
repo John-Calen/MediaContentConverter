@@ -8,8 +8,8 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 
 const path = require('path');
 
-const inputFolder = 'S:/recordsMp4';
-const outputFolder = 'S:/recordsAvi';
+const inputFolder = 'S:/records';
+const outputFolder = 'S:/recordsMp4x';
 
 if (!fs.existsSync(outputFolder)) {
     fs.mkdirSync(outputFolder);
@@ -21,11 +21,11 @@ fs.readdir(inputFolder, (err, files) => {
         return;
     }
 
-    const webmFiles = files.filter(file => path.extname(file).toLowerCase() === '.mp4');
+    const webmFiles = files.filter(file => path.extname(file).toLowerCase() === '.webm');
 
     webmFiles.forEach(webmFile => {
         const webmFilePath = path.join(inputFolder, webmFile);
-        const mp4FileName = path.basename(webmFile, path.extname(webmFile)) + '.avi';
+        const mp4FileName = path.basename(webmFile, path.extname(webmFile)) + '.mp4';
         const mp4FilePath = path.join(outputFolder, mp4FileName);
 
         let totalTime = 0;
