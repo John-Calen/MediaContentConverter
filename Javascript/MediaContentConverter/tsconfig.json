@@ -1,8 +1,14 @@
 {
     "compilerOptions": {
-      "target": "es5",
-      "module": "commonjs",
+      "module": "CommonJS", // This should be ESNext or a version that Node.js accepts
+      "target": "ESNext", // Or a target that is appropriate for your Node.js version
+      "esModuleInterop": true,
+      "moduleResolution": "node",
       "outDir": "out",
-      "sourceMap": true
+      "sourceMap": true,
+      "strict": true,
+      "declaration": true,
+      "declarationDir": "out",
+      "forceConsistentCasingInFileNames": true
     }
   }

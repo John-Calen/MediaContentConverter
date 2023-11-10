@@ -1,6 +1,11 @@
 {
   "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.24",
     "@types/node": "^20.9.0",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
     "fluent-ffmpeg": "^2.1.2"
   }
 }
