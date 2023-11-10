@@ -3,6 +3,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import path from 'path';
 import readline from 'readline';
 import { convert } from './convert';
+import './common/readline'
 
 //  make sure you have FFMPEG on your device
 //  make sure you added FFMPEG_EXE as Env variable to your system and it links to the ffmpeg.exe file
@@ -17,18 +18,7 @@ const readlineInterface = readline.createInterface
     }
 );
 
-function question(text: string): Promise<string>
-{
-    let promise = new Promise<string>
-    (
-        (resolve: (payload: string) => void) => 
-            readlineInterface.question(text, (answer) => { resolve(answer) })
-    );
-
-    return promise;
-}
-
-function handleFiles
+async function handleFiles
 (
     sourceFileExtension: string, 
     inputDirectory: string, 
@@ -37,32 +27,20 @@ function handleFiles
 )
 {
     if ( ! fs.existsSync(outputDirectory))
-    fs.mkdirSync(outputDirectory);
+        fs.mkdirSync(outputDirectory);
 
-    fs.readdir
+    const files = await fs.promises.readdir(inputDirectory);
+    const sourceFiles = files.filter(file => path.extname(file).toLowerCase() === `.${sourceFileExtension}`);
+
+    sourceFiles.forEach
     (
-        inputDirectory, 
-        (error, files) => 
+        (webmFile: string) => 
         {
-            if (error) 
-            {
-                console.error('Error reading directory:', error);
-                return;
-            }
+            const sourceFilePath = path.join(inputDirectory, webmFile);
+            const destinationFileName = path.basename(webmFile, path.extname(webmFile)) + `.${destinationFileExtension}`;
+            const destinationFilePath = path.join(outputDirectory, destinationFileName);
 
-            const sourceFiles = files.filter(file => path.extname(file).toLowerCase() === `.${sourceFileExtension}`);
-
-            sourceFiles.forEach
-            (
-                (webmFile: string) => 
-                {
-                    const sourceFilePath = path.join(inputDirectory, webmFile);
-                    const destinationFileName = path.basename(webmFile, path.extname(webmFile)) + `.${destinationFileExtension}`;
-                    const destinationFilePath = path.join(outputDirectory, destinationFileName);
-
-                    convert(sourceFilePath, destinationFilePath);
-                }
-            );
+            convert(sourceFilePath, destinationFilePath);
         }
     );
 }
@@ -71,12 +49,12 @@ async function body()
 {
     try
     {
-        const sourceFileExtension = await question("Enter source file extension: ");
-        const inputDirectory = await question("Enter input directory: ");
-        const destinationFileExtension = await question("Enter destination file extension: ");
-        const outputDirectory = await question("Enter output directory: ");
+        const sourceFileExtension = await readlineInterface.questionAsync("Enter source file extension: ");
+        const inputDirectory = await readlineInterface.questionAsync("Enter input directory: ");
+        const destinationFileExtension = await readlineInterface.questionAsync("Enter destination file extension: ");
+        const outputDirectory = await readlineInterface.questionAsync("Enter output directory: ");
     
-        handleFiles(sourceFileExtension, inputDirectory, destinationFileExtension, outputDirectory);
+        await handleFiles(sourceFileExtension, inputDirectory, destinationFileExtension, outputDirectory);
     }
     
     catch (error)
