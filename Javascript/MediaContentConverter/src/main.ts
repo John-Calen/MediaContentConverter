@@ -5,6 +5,8 @@ import readline from 'readline';
 import { convert } from './convert';
 import './common/readline'
 
+export { };
+
 //  make sure you have FFMPEG on your device
 //  make sure you added FFMPEG_EXE as Env variable to your system and it links to the ffmpeg.exe file
 const ffmpegPath = process.env["FFMPEG_EXE"]!;
@@ -40,7 +42,15 @@ async function handleFiles
             const destinationFileName = path.basename(webmFile, path.extname(webmFile)) + `.${destinationFileExtension}`;
             const destinationFilePath = path.join(outputDirectory, destinationFileName);
 
-            convert(sourceFilePath, destinationFilePath);
+            convert
+            (
+                sourceFilePath, 
+                destinationFilePath,
+                () => console.log(`File: ${sourceFilePath}`),
+                (_progress, percent) => console.log(`Percent: ${percent}%, File: ${sourceFilePath}`),
+                () => console.log(`Completed File: ${sourceFilePath}`),
+                (error) => console.error(`Error: ${error}, File: ${sourceFilePath}`),
+            );
         }
     );
 }
