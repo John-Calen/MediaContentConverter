@@ -35,3 +35,36 @@ export function convert
         })
         .run();    
 }
+
+export function convertAsync
+(
+    originalFilePath: string, 
+    convertFilePath: string,
+    onStart?: () => void,
+    onProgress?: (progress: any, percent: number) => void,
+    onEnd?: () => void,
+    onError?: (error: any) => void 
+): Promise<void>
+{
+    const promise = new Promise<void>
+    (
+        (resolve: (value: void) => void) =>
+            convert
+            (
+                originalFilePath, 
+                convertFilePath, 
+                onStart, 
+                onProgress, 
+                () => { 
+                    onEnd?.();
+                    resolve(); 
+                },
+                (error) => { 
+                    onError?.(error);
+                    resolve(); 
+                },
+            )
+    );
+
+    return promise;
+}

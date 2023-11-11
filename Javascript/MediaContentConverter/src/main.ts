@@ -1,9 +1,9 @@
-import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
+import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
-import { convert } from './convert';
-import './common/readline'
+import './common/readline';
+import { convertAsync } from './convert';
 
 export { };
 
@@ -34,25 +34,22 @@ async function handleFiles
     const files = await fs.promises.readdir(inputDirectory);
     const sourceFiles = files.filter(file => path.extname(file).toLowerCase() === `.${sourceFileExtension}`);
 
-    sourceFiles.forEach
-    (
-        (webmFile: string) => 
-        {
-            const sourceFilePath = path.join(inputDirectory, webmFile);
-            const destinationFileName = path.basename(webmFile, path.extname(webmFile)) + `.${destinationFileExtension}`;
-            const destinationFilePath = path.join(outputDirectory, destinationFileName);
+    for (const sourceFile of sourceFiles) 
+    {
+        const sourceFilePath = path.join(inputDirectory, sourceFile);
+        const destinationFileName = path.basename(sourceFile, path.extname(sourceFile)) + `.${destinationFileExtension}`;
+        const destinationFilePath = path.join(outputDirectory, destinationFileName);
 
-            convert
-            (
-                sourceFilePath, 
-                destinationFilePath,
-                () => console.log(`File: ${sourceFilePath}`),
-                (_progress, percent) => console.log(`Percent: ${percent}%, File: ${sourceFilePath}`),
-                () => console.log(`Completed File: ${sourceFilePath}`),
-                (error) => console.error(`Error: ${error}, File: ${sourceFilePath}`),
-            );
-        }
-    );
+        await convertAsync
+        (
+            sourceFilePath, 
+            destinationFilePath,
+            () => console.log(`File: ${sourceFilePath}`),
+            (_progress, percent) => console.log(`Percent: ${percent}%, File: ${sourceFilePath}`),
+            () => console.log(`Completed File: ${sourceFilePath}`),
+            (error) => console.error(`Error: ${error}, File: ${sourceFilePath}`),
+        );
+    }
 }
 
 async function body()
