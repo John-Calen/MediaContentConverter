@@ -10,6 +10,7 @@ export { };
 //  make sure you have FFMPEG on your device
 //  make sure you added FFMPEG_EXE as Env variable to your system and it links to the ffmpeg.exe file
 const ffmpegPath = process.env["FFMPEG_EXE"]!;
+console.log("PATH: " + ffmpegPath);
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 const readlineInterface = readline.createInterface

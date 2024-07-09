@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "module": "CommonJS", // This should be ESNext or a version that Node.js accepts
+      "module": "ESNext", // This should be ESNext or a version that Node.js accepts
       "target": "ESNext", // Or a target that is appropriate for your Node.js version
       "esModuleInterop": true,
       "moduleResolution": "node",
